@@ -69,6 +69,10 @@ public class Player extends Character
 		case "use":
 			action = Input.USE;
 			break;
+		case "help":
+			//help option in case player doesn't know of the inputs
+			action = Input.HELP;
+			break;
 		default:
 			action = Input.INVALID;
 			break;
@@ -109,6 +113,9 @@ public class Player extends Character
 			case USE:
 				use();
 				break;
+			case HELP:
+				help();
+				break;
 			default:
 				System.out.println(name);
 				break;
@@ -116,6 +123,12 @@ public class Player extends Character
 		}
 	}
 
+	private void help()
+	{
+		System.out.println("The valid command words are:");
+		System.out.println("move, grab, drop, look, inventory, equip, use, exit, help");
+		System.out.println();
+	}
 	private void use()
 	{
 		ZuulObject item = searchInventory(object);
