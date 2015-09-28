@@ -110,24 +110,34 @@ public class Room
 		items.remove(item);
 	}
 
+	//Prints a list of the rooms contents
 	public void look()
 	{
 		System.out.println("You see:");
+
+		showNeighbors();
 		
-		if(characters.isEmpty() && items.isEmpty())
-		{
-			System.out.println("Nothing.");
-		}
-		else
-		{
-			for(Character character : characters)
-				System.out.println(character);
-			for(ZuulObject item : items)
-				System.out.println(item);
-		}
+		for(Character character : characters)
+			System.out.println(character);
+		for(ZuulObject item : items)
+			System.out.println(item);
 		
 	}
+	
+	//Prints a list of rooms in different directions
+	public void showNeighbors()
+	{
+		if(north != null)
+			System.out.println("A room to the north");
+		if(south != null)
+			System.out.println("A room to the south");
+		if(east != null)
+			System.out.println("A room to the east");
+		if(west != null)
+			System.out.println("A room to the west");
+	}
 
+	//Removes and returns an item from the room
 	public ZuulObject pickUp(String object)
 	{
 		ListIterator<ZuulObject> it = items.listIterator();

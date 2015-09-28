@@ -16,13 +16,16 @@ public class Player extends Character
 	private static Scanner textIn = new Scanner(System.in);
 	private static int count = 0;
 	
+	//Constructor which initializes current room and name
 	public Player(Room startingRoom)
 	{
 		currentRoom = startingRoom;
+		currentRoom.addCharacter(this);
 		inventory = new ArrayList<ZuulObject>();
 		name = String.format("Player %d", ++count);
 	}
 	
+	//Gets text input from player and sets the "action" input enum accordingly
 	public void getInput()
 	{
 		System.out.println();
@@ -70,6 +73,7 @@ public class Player extends Character
 			action = Input.USE;
 			break;
 		case "help":
+		case "h":
 			//help option in case player doesn't know of the inputs
 			action = Input.HELP;
 			break;
@@ -80,6 +84,8 @@ public class Player extends Character
 		
 	}
 
+	//The update method called every cycle
+	//Gets user input and branches accordingly
 	public void update()
 	{
 		getInput();
@@ -129,6 +135,9 @@ public class Player extends Character
 		System.out.println("move, grab, drop, look, inventory, equip, use, exit, help");
 		System.out.println();
 	}
+	
+	//Uses a consumable object
+	//Currently, it does virtually nothing
 	private void use()
 	{
 		ZuulObject item = searchInventory(object);
@@ -142,6 +151,7 @@ public class Player extends Character
 		
 	}
 
+	//moves weapons from inventory to equipped slot
 	private void equip()
 	{
 		ZuulObject item = searchInventory(object);
@@ -166,6 +176,7 @@ public class Player extends Character
 		}
 	}
 
+	//Prints a list of items in the inventory
 	private void checkInventory()
 	{
 		System.out.println("You have:\n");
@@ -186,6 +197,7 @@ public class Player extends Character
 		}
 	}
 
+	//Picks up an object from the current room
 	private void grab()
 	{
 		ZuulObject item = currentRoom.pickUp(object);
@@ -198,6 +210,7 @@ public class Player extends Character
 			System.out.println("That's not in here");
 	}
 	
+	//Drops an object into the current room
 	private void drop()
 	{
 		ZuulObject item = searchInventory(object);
@@ -221,43 +234,50 @@ public class Player extends Character
 		}
 	}
 
+	//Moves the player into another room
 	private void move()
 	{
+		currentRoom.removeCharacter(this);
 		boolean err = false;
-		switch(object)
+		if(object != null)
 		{
-		case "north":
-			currentDirection = 0;
-			break;
-		case "east":
-			currentDirection = 1;
-			break;
-		case "south":
-			currentDirection = 2;
-			break;
-		case "west":
-			currentDirection = 3;
-			break;
-		case "forward":
-		case "straight":
-		case "onward":
-			break;
-		case "right":
-			currentDirection = (currentDirection + 1) % 4;
-			break;
-		case "backward":
-		case "back":
-			currentDirection = (currentDirection + 2) % 4;
-			break;
-		case "left":
-			currentDirection = (currentDirection + 1) % 4;
-			break;
-		default:
-			err = true;
-			break;
+			switch(object)
+			{
+			case "north":
+				currentDirection = 0;
+				break;
+			case "east":
+				currentDirection = 1;
+				break;
+			case "south":
+				currentDirection = 2;
+				break;
+			case "west":
+				currentDirection = 3;
+				break;
+			case "forward":
+			case "straight":
+			case "onward":
+				break;
+			case "right":
+				currentDirection = (currentDirection + 1) % 4;
+				break;
+			case "backward":
+			case "back":
+				currentDirection = (currentDirection + 2) % 4;
+				break;
+			case "left":
+				currentDirection = (currentDirection + 1) % 4;
+				break;
+			default:
+				err = true;
+				break;
+			}
 		}
+		else
+			err = true;
 		
-		if(currentRoom.getAdjacent(getCurrentDirection()) != null)
+		if(!err && currentRoom.getAdjacent(getCurrentDirection()) != null)
 		{
 			currentRoom = currentRoom.getAdjacent(getCurrentDirection());
 			System.out.println("You go " + getCurrentDirection());
@@ -268,8 +288,11 @@ public class Player extends Character
 		{
 			System.out.println("You can't go that way");
 		}
+		currentRoom.addCharacter(this);
 	}
 	
+	//Searches the inventory for an object by name
+	//returns null if the object isn't in inventory
 	private ZuulObject searchInventory(String itemName)
 	{
 
@@ -293,6 +316,12 @@ public class Player extends Character
 	private Direction getCurrentDirection()
 	{
 		return directions[currentDirection];
+	}
+	
+	//Closes input scanner
+	public static void closeInput()
+	{
+		textIn.close();
 	}
 
 }

@@ -14,4 +14,9 @@ public abstract class Character
 	{
 		return name;
 	}
+	
+	public String toString()
+	{
+		return name;
+	}
 }
